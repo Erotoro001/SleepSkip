@@ -30,7 +30,7 @@ public class SleepCommand implements CommandExecutor {
         }
 
         if (args[0].equalsIgnoreCase("status")) {
-            ActionBar.sendToAll("§eПлагин SleepSkip работает корректно.");
+            ActionBar.sendToAll(plugin, "§eПлагин SleepSkip работает корректно.", 5);
             return true;
         }
 
