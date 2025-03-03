@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBedLeaveEvent;
+import org.bukkit.Statistic;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashSet;
@@ -79,6 +80,12 @@ public class SleepListener implements Listener {
                     world.setTime(0);
                     world.setStorm(false);
                     world.setThundering(false);
+
+                    // Сброс статистики TIME_SINCE_REST для всех спящих игроков (сброс фантомов)
+                    for (Player sleepingPlayer : sleepingPlayers) {
+                        sleepingPlayer.setStatistic(Statistic.TIME_SINCE_REST, 0);
+                    }
+
                     // Читаем сообщение из конфига и отправляем его
                     String nightMsg = plugin.getConfig().getString("messages.nightSkipped",
                             "&aНочь пропущена! Доброе утро!");
@@ -98,6 +105,12 @@ public class SleepListener implements Listener {
                         world.setTime(0);
                         world.setStorm(false);
                         world.setThundering(false);
+
+                        // Сброс статистики TIME_SINCE_REST для всех спящих игроков (сброс фантомов)
+                        for (Player sleepingPlayer : sleepingPlayers) {
+                            sleepingPlayer.setStatistic(Statistic.TIME_SINCE_REST, 0);
+                        }
+
                         String nightMsg = plugin.getConfig().getString("messages.nightSkipped",
                                 "&aНочь пропущена! Доброе утро!");
                         ActionBar.sendToAll(plugin, nightMsg, 5);
