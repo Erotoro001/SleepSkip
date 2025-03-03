@@ -1,0 +1,14 @@
+# Настройки SleepSkip
+settings:
+  required-type: "percent"  # "fixed" или "percent"
+  required-value: 50        # Значение порога (число или процент)
+
+  ignore-afk: true         # Исключать ли AFK-игроков (CMI/EssentialsX)
+  skip-rain: true          # Пропускать ли дождь при пропуске ночи
+  per-world: false         # Использовать разные настройки для миров
+  use-actionbar: true      # Использовать экшен-бар для уведомлений
+
+messages:
+  sleep-progress: "&e{current}/{needed} игроков спит. Нужно {total} для пропуска ночи!"
+  night-skipped: "&aНочь пропущена! Доброе утро!"
+  not-enough: "&cНедостаточно игроков спит!"

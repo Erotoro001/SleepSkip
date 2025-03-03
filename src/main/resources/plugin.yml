@@ -1,0 +1,11 @@
+name: SleepSkip
+version: 1.0
+main: me.Erotoro.sleepskip.SleepSkip
+api-version: '1.21.4'
+folia-supported: true
+authors: [Erotoro]
+description: Плагин для пропуска ночи при сне определенного числа игроков.
+commands:
+  sleep:
+    description: Команды SleepSkip
+    usage: /sleep <reload|set|status>
