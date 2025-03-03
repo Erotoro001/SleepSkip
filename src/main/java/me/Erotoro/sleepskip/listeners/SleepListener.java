@@ -48,15 +48,16 @@ public class SleepListener implements Listener {
         int sleeping = sleepingPlayers.size();
         int needed = getRequiredSleepers((int) totalPlayers);
 
-        // Если набралось нужное кол-во спящих, запускаем плавный skipNight.
-        // Сообщение о пропуске ночи теперь отправляется в конце skipNight(), после наступления утра.
         if (sleeping >= needed) {
+            // Если достаточно игроков спит, запускаем плавное переключение ночи.
             skipNight(triggeringPlayer.getWorld());
         } else {
-            ActionBar.sendToAll(plugin,
-                    "&e" + sleeping + "/" + needed + " игроков спит. Нужно " + needed + " для пропуска ночи!",
-                    5
-            );
+            // Читаем сообщение из конфига и заменяем плейсхолдеры
+            String statusMsg = plugin.getConfig().getString("messages.sleepingStatus",
+                    "&e{sleeping}/{needed} игроков спит. Нужно {needed} для пропуска ночи!");
+            statusMsg = statusMsg.replace("{sleeping}", String.valueOf(sleeping))
+                    .replace("{needed}", String.valueOf(needed));
+            ActionBar.sendToAll(plugin, statusMsg, 5);
         }
     }
 
@@ -71,30 +72,24 @@ public class SleepListener implements Listener {
     }
 
     private void skipNight(World world) {
-        // Folia
         if (Bukkit.getServer().getName().contains("Folia")) {
             Bukkit.getGlobalRegionScheduler().runAtFixedRate(plugin, task -> {
                 long currentTime = world.getTime();
-                // Проверяем, что ночь закончилась
                 if (currentTime < 12541 || currentTime >= 24000) {
-                    // Ставим утро, убираем погоду
                     world.setTime(0);
                     world.setStorm(false);
                     world.setThundering(false);
-
-                    // Теперь точно утро — отправляем сообщение
-                    ActionBar.sendToAll(plugin, "&aНочь пропущена! Доброе утро!", 4);
+                    // Читаем сообщение из конфига и отправляем его
+                    String nightMsg = plugin.getConfig().getString("messages.nightSkipped",
+                            "&aНочь пропущена! Доброе утро!");
+                    ActionBar.sendToAll(plugin, nightMsg, 4);
                     sleepingPlayers.clear();
-
                     task.cancel();
                     return;
                 }
-                // Плавно двигаем время
                 world.setTime(currentTime + 100);
-            }, 1L, 2L); // initialDelay = 1 тик, период = 2 тика (ок. 0.1 сек)
-        }
-        // Обычные сервера
-        else {
+            }, 1L, 2L);
+        } else {
             new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -103,10 +98,10 @@ public class SleepListener implements Listener {
                         world.setTime(0);
                         world.setStorm(false);
                         world.setThundering(false);
-
-                        ActionBar.sendToAll(plugin, "&aНочь пропущена! Доброе утро!", 5);
+                        String nightMsg = plugin.getConfig().getString("messages.nightSkipped",
+                                "&aНочь пропущена! Доброе утро!");
+                        ActionBar.sendToAll(plugin, nightMsg, 5);
                         sleepingPlayers.clear();
-
                         cancel();
                         return;
                     }

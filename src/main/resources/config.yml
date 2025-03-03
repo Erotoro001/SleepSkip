@@ -9,6 +9,6 @@ settings:
   use-actionbar: true      # Использовать экшен-бар для уведомлений
 
 messages:
-  sleep-progress: "&e{current}/{needed} игроков спит. Нужно {total} для пропуска ночи!"
-  night-skipped: "&aНочь пропущена! Доброе утро!"
+  nightSkipped: "<#F6AD72>Ночь пропущена! Доброе утро!"
+  sleepingStatus: "<#EC9793>{sleeping}/{needed} &fигроков спит. Нужно <#EC9793>{needed} &fдля пропуска ночи!"
   not-enough: "&cНедостаточно игроков спит!"

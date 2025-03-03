@@ -1,42 +1,38 @@
 package me.Erotoro.sleepskip.utils;
 
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
+import me.Erotoro.sleepskip.SleepSkip;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import me.Erotoro.sleepskip.SleepSkip;
 
-@SuppressWarnings("deprecation")
 public class ActionBar {
 
     /**
      * Отправляет сообщение в ActionBar всем игрокам в течение durationInSeconds секунд.
-     * Если сервер работает под Folia, используется глобальный региональный scheduler.
+     * Сообщение обрабатывается через MiniMessage с поддержкой RGB (например, "<gradient:#FF0000:#00FF00>Привет</gradient>").
      *
      * @param plugin             ссылка на главный класс плагина
-     * @param message            сообщение для отображения
-     * @param durationInSeconds  длительность в секундах
+     * @param message            сообщение для отображения (форматируется через MiniMessage)
+     * @param durationInSeconds  длительность показа в секундах
      */
     public static void sendToAll(SleepSkip plugin, String message, int durationInSeconds) {
-        String formattedMessage = ChatColor.translateAlternateColorCodes('&', message);
+        Component component = MiniMessage.miniMessage().deserialize(message);
         if (Bukkit.getServer().getName().contains("Folia")) {
             final int[] iterations = {0};
-            // 20 тиков = 1 секунда
             Bukkit.getGlobalRegionScheduler().runAtFixedRate(plugin, task -> {
                 iterations[0]++;
                 for (Player player : Bukkit.getOnlinePlayers()) {
-                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(formattedMessage));
+                    player.sendActionBar(component);
                 }
                 if (iterations[0] >= durationInSeconds) {
                     task.cancel();
                 }
-            }, 1L, 20L); // initial delay изменён на 1L
+            }, 1L, 20L);
         } else {
             new BukkitRunnable() {
                 int secondsLeft = durationInSeconds;
-
                 @Override
                 public void run() {
                     if (secondsLeft <= 0) {
@@ -44,7 +40,7 @@ public class ActionBar {
                         return;
                     }
                     for (Player player : Bukkit.getOnlinePlayers()) {
-                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(formattedMessage));
+                        player.sendActionBar(component);
                     }
                     secondsLeft--;
                 }
